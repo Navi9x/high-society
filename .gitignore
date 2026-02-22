@@ -1,0 +1,6 @@
+node_modules/
+db/tickets.db
+.env
+*.db
+*.db-shm
+*.db-wal

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f0f1a" />
+    <title>My Ticket — EventPass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body class="public-body">
+    <div class="public-card">
+
+        <div class="public-header">
+            <span class="logo-icon">🎫</span>
+            <h1>EventPass</h1>
+        </div>
+
+        <div class="ticket-container">
+            <!-- Ticket type header -->
+            <div class="ticket-type-banner ticket-type-<%= ticket.type.toLowerCase() %>">
+                <span class="ticket-type-label">
+                    <%= ticket.type %> TICKET
+                </span>
+            </div>
+
+            <!-- QR Code -->
+            <div class="qr-wrap public-qr">
+                <img src="<%= qrDataUrl %>" alt="Your ticket QR code" id="publicQrImg" />
+            </div>
+
+            <!-- Save button -->
+            <div class="public-actions">
+                <button id="saveQrBtn" class="btn btn-primary btn-full">⬇ Save QR Image</button>
+            </div>
+
+            <!-- Status warning -->
+            <% if (ticket.status==='voided' ) { %>
+                <div class="alert alert-error" style="margin-top:1rem">
+                    ⚠️ This ticket has been voided. Please contact the organiser.
+                </div>
+                <% } %>
+
+                    <p class="text-muted small text-center" style="margin-top:1.5rem">
+                        Show this QR code at the entrance.<br />
+                        Screenshot or save it for offline use.
+                    </p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('saveQrBtn').addEventListener('click', function () {
+            const link = document.createElement('a');
+            link.href = document.getElementById('publicQrImg').src;
+            link.download = 'my-event-ticket.png';
+            link.click();
+        });
+    </script>
+</body>
+
+</html>

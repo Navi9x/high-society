@@ -1,0 +1,93 @@
+<%- include('../partials/header', { title: 'Ticket Detail — EventPass' , admin }) %>
+
+    <main class="container">
+
+        <!-- Back + Header -->
+        <div class="page-header">
+            <div>
+                <a href="/admin" class="back-link">← All Tickets</a>
+                <h2>Ticket Detail</h2>
+            </div>
+            <div class="header-badges">
+                <span class="badge badge-<%= ticket.type.toLowerCase() %> badge-lg">
+                    <%= ticket.type %>
+                </span>
+                <span class="badge badge-<%= ticket.status %> badge-lg">
+                    <%= ticket.status %>
+                </span>
+            </div>
+        </div>
+
+        <div class="detail-grid">
+
+            <!-- QR Section -->
+            <div class="card qr-card">
+                <div class="qr-wrap">
+                    <img src="<%= qrDataUrl %>" alt="QR Code" id="qrImage" class="qr-img" />
+                </div>
+                <p class="mono text-muted small token-display">
+                    <%= ticket.token %>
+                </p>
+                <div class="qr-actions">
+                    <a href="<%= qrDataUrl %>" download="ticket-<%= ticket.token.slice(0,8) %>.png"
+                        class="btn btn-secondary" id="downloadBtn">⬇ Save QR</a>
+                    <a href="/t/<%= ticket.token %>" target="_blank" class="btn btn-outline">🔗 Public Link</a>
+                </div>
+
+                <!-- Void toggle -->
+                <form method="POST" action="/admin/ticket/<%= ticket.token %>/void" class="void-form">
+                    <button type="submit"
+                        class="btn <%= ticket.status === 'active' ? 'btn-danger-outline' : 'btn-success' %> btn-full"
+                        onclick="return confirm('<%= ticket.status === 'active' ? 'Void this ticket?' : 'Reactivate this ticket?' %>')">
+                        <%= ticket.status==='active' ? '🚫 Void Ticket' : '✅ Reactivate Ticket' %>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Scan History -->
+            <div class="card history-card">
+                <h3>Scan History <span class="badge badge-count">
+                        <%= scans.length %>
+                    </span></h3>
+
+                <% if (scans.length===0) { %>
+                    <p class="text-muted text-center" style="padding:2rem">No scans yet.</p>
+                    <% } else { %>
+                        <div class="table-wrap">
+                            <table class="ticket-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Time</th>
+                                        <th>Result</th>
+                                        <th>Operator</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% scans.forEach((s, idx)=> { %>
+                                        <tr>
+                                            <td class="text-muted small">
+                                                <%= scans.length - idx %>
+                                            </td>
+                                            <td class="small">
+                                                <%= s.scanned_at.replace('T', ' ' ).slice(0, 19) %>
+                                            </td>
+                                            <td><span class="badge badge-<%= s.result %>">
+                                                    <%= s.result %>
+                                                </span></td>
+                                            <td class="small text-muted">
+                                                <%= s.operator %>
+                                            </td>
+                                        </tr>
+                                        <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                        <% } %>
+            </div>
+
+        </div>
+
+    </main>
+
+    <%- include('../partials/footer') %>

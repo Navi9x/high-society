@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0f0f1a" />
+    <title>Scanner — EventPass</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <!-- html5-qrcode library -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+</head>
+
+<body class="scanner-body">
+
+    <!-- Top bar -->
+    <div class="scanner-topbar">
+        <a href="/admin" class="scanner-back">← Dashboard</a>
+        <span class="scanner-title">🎫 EventPass Scanner</span>
+        <form method="POST" action="/auth/logout" style="margin:0">
+            <button type="submit" class="scanner-logout">Sign Out</button>
+        </form>
+    </div>
+
+    <!-- Camera viewport -->
+    <div class="scanner-viewport">
+        <div id="qr-reader"></div>
+        <div class="scan-overlay">
+            <div class="scan-corner tl"></div>
+            <div class="scan-corner tr"></div>
+            <div class="scan-corner bl"></div>
+            <div class="scan-corner br"></div>
+            <div class="scan-laser"></div>
+        </div>
+        <p class="scan-hint">Point camera at a ticket QR code</p>
+    </div>
+
+    <!-- Result overlay -->
+    <div id="resultOverlay" class="result-overlay hidden">
+        <div class="result-card" id="resultCard">
+            <div class="result-icon" id="resultIcon"></div>
+            <div class="result-title" id="resultTitle"></div>
+            <div class="result-type" id="resultType"></div>
+            <div class="result-meta" id="resultMeta"></div>
+        </div>
+    </div>
+
+    <script src="/js/scanner.js"></script>
+</body>
+
+</html>

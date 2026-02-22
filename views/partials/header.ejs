@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f0f1a" />
+    <title>
+        <%= typeof title !=='undefined' ? title : 'EventPass Admin' %>
+    </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="/css/style.css" />
+</head>
+
+<body>
+    <nav class="navbar">
+        <a href="/admin" class="nav-brand">🎫 EventPass</a>
+        <div class="nav-links">
+            <a href="/admin/scanner" class="nav-link">📷 Scanner</a>
+            <% if (typeof admin !=='undefined' && admin) { %>
+                <span class="nav-user">👤 <%= admin.username %></span>
+                <form method="POST" action="/auth/logout" style="display:inline">
+                    <button type="submit" class="btn btn-sm btn-danger-outline">Sign Out</button>
+                </form>
+                <% } %>
+        </div>
+    </nav>

@@ -1,0 +1,173 @@
+<%- include('../partials/header', { title: 'Dashboard — EventPass' , admin }) %>
+
+    <main class="container">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div>
+                <h2>Dashboard</h2>
+                <p class="subtitle">Manage your event tickets</p>
+            </div>
+            <a href="/admin/scanner" class="btn btn-success">
+                <span>📷</span> Scanner
+            </a>
+        </div>
+
+        <!-- Alerts -->
+        <% if (success) { %>
+            <div class="alert alert-success">✅ Tickets generated successfully!</div>
+            <% } %>
+                <% if (err==='limit' ) { %>
+                    <div class="alert alert-error">⚠️ Ticket limit reached. You can only create <%= can %> more tickets.
+                    </div>
+                    <% } %>
+                        <% if (err==='zero' ) { %>
+                            <div class="alert alert-error">⚠️ Please enter at least 1 ticket to generate.</div>
+                            <% } %>
+
+                                <!-- Stats -->
+                                <div class="stats-grid">
+                                    <div class="stat-card">
+                                        <span class="stat-value">
+                                            <%= stats.total || 0 %>
+                                        </span>
+                                        <span class="stat-label">Total Tickets</span>
+                                    </div>
+                                    <div class="stat-card stat-vip">
+                                        <span class="stat-value">
+                                            <%= stats.vip || 0 %>
+                                        </span>
+                                        <span class="stat-label">VIP</span>
+                                    </div>
+                                    <div class="stat-card stat-general">
+                                        <span class="stat-value">
+                                            <%= stats.general || 0 %>
+                                        </span>
+                                        <span class="stat-label">General</span>
+                                    </div>
+                                    <div class="stat-card stat-voided">
+                                        <span class="stat-value">
+                                            <%= stats.voided || 0 %>
+                                        </span>
+                                        <span class="stat-label">Voided</span>
+                                    </div>
+                                </div>
+
+                                <!-- Generate Tickets -->
+                                <% if ((stats.total || 0) < 200) { %>
+                                    <div class="card">
+                                        <h3>Generate Tickets</h3>
+                                        <p class="text-muted">Remaining capacity: <%= 200 - (stats.total || 0) %>
+                                                tickets</p>
+                                        <form method="POST" action="/admin/generate" class="generate-form">
+                                            <div class="form-row">
+                                                <div class="form-group">
+                                                    <label for="vipCount">VIP Tickets</label>
+                                                    <input type="number" id="vipCount" name="vipCount" min="0" max="200"
+                                                        value="0" required />
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="generalCount">General Tickets</label>
+                                                    <input type="number" id="generalCount" name="generalCount" min="0"
+                                                        max="200" value="0" required />
+                                                </div>
+                                                <div class="form-group form-action">
+                                                    <button type="submit" class="btn btn-primary">Generate</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <% } else { %>
+                                        <div class="card card-full-alert">
+                                            <p>🎟️ Maximum of 200 tickets reached.</p>
+                                        </div>
+                                        <% } %>
+
+                                            <!-- Search & Filter -->
+                                            <div class="card">
+                                                <form method="GET" action="/admin" class="search-form">
+                                                    <div class="form-row">
+                                                        <div class="form-group flex-grow">
+                                                            <input type="text" name="q" id="searchInput"
+                                                                placeholder="Search by token prefix…"
+                                                                value="<%= q %>" />
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <select name="filterType" id="typeFilter">
+                                                                <option value="">All Types</option>
+                                                                <option value="VIP" <%=filterType==='VIP' ? 'selected'
+                                                                    : '' %>>VIP</option>
+                                                                <option value="General" <%=filterType==='General'
+                                                                    ? 'selected' : '' %>>General</option>
+                                                            </select>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <button type="submit"
+                                                                class="btn btn-secondary">Search</button>
+                                                        </div>
+                                                    </div>
+                                                </form>
+
+                                                <!-- Ticket Table -->
+                                                <% if (tickets.length===0) { %>
+                                                    <p class="text-muted text-center">No tickets found.</p>
+                                                    <% } else { %>
+                                                        <div class="table-wrap">
+                                                            <table class="ticket-table">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Token</th>
+                                                                        <th>Type</th>
+                                                                        <th>Status</th>
+                                                                        <th>Created</th>
+                                                                        <th></th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <% tickets.forEach(t=> { %>
+                                                                        <tr>
+                                                                            <td class="mono">
+                                                                                <%= t.token.slice(0, 12) %>…
+                                                                            </td>
+                                                                            <td><span
+                                                                                    class="badge badge-<%= t.type.toLowerCase() %>">
+                                                                                    <%= t.type %>
+                                                                                </span></td>
+                                                                            <td><span
+                                                                                    class="badge badge-<%= t.status %>">
+                                                                                    <%= t.status %>
+                                                                                </span></td>
+                                                                            <td class="text-muted small">
+                                                                                <%= t.created_at.slice(0,
+                                                                                    16).replace('T', ' ' ) %>
+                                                                            </td>
+                                                                            <td><a href="/admin/ticket/<%= t.token %>"
+                                                                                    class="link-btn">View →</a></td>
+                                                                        </tr>
+                                                                        <% }) %>
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+
+                                                        <!-- Pagination -->
+                                                        <% if (totalPages> 1) { %>
+                                                            <div class="pagination">
+                                                                <% if (page> 1) { %>
+                                                                    <a href="/admin?q=<%= q %>&filterType=<%= filterType %>&page=<%= page - 1 %>"
+                                                                        class="btn btn-sm btn-secondary">← Prev</a>
+                                                                    <% } %>
+                                                                        <span class="text-muted">Page <%= page %> / <%=
+                                                                                    totalPages %></span>
+                                                                        <% if (page < totalPages) { %>
+                                                                            <a href="/admin?q=<%= q %>&filterType=<%= filterType %>&page=<%= page + 1 %>"
+                                                                                class="btn btn-sm btn-secondary">Next
+                                                                                →</a>
+                                                                            <% } %>
+                                                            </div>
+                                                            <% } %>
+                                                                <% } %>
+                                            </div>
+
+    </main>
+
+    <%- include('../partials/footer') %>
