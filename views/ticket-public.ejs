@@ -56,7 +56,7 @@
         document.getElementById('saveQrBtn').addEventListener('click', function () {
             const link = document.createElement('a');
             link.href = document.getElementById('publicQrImg').src;
-            link.download = 'my-event-ticket.png';
+            link.download = '<%= ticket.id %>.png';
             link.click();
         });
     </script>

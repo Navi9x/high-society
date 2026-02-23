@@ -509,6 +509,7 @@ input:focus, select:focus {
 .result-card.result-valid   { border: 2px solid var(--success); }
 .result-card.result-invalid { border: 2px solid var(--danger); }
 .result-card.result-voided  { border: 2px solid var(--warning); }
+.result-card.result-used    { border: 2px solid var(--warning); background: rgba(245,158,11,0.08); }
 
 .result-icon  { font-size: 4rem; margin-bottom: 0.75rem; line-height: 1; }
 .result-title { font-size: 1.75rem; font-weight: 800; margin-bottom: 0.5rem; letter-spacing: -0.02em; }

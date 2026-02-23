@@ -29,8 +29,8 @@
                     <%= ticket.token %>
                 </p>
                 <div class="qr-actions">
-                    <a href="<%= qrDataUrl %>" download="ticket-<%= ticket.token.slice(0,8) %>.png"
-                        class="btn btn-secondary" id="downloadBtn">⬇ Save QR</a>
+                    <a href="<%= qrDataUrl %>" download="<%= ticket.id %>.png" class="btn btn-secondary"
+                        id="downloadBtn">⬇ Save QR</a>
                     <a href="/t/<%= ticket.token %>" target="_blank" class="btn btn-outline">🔗 Public Link</a>
                 </div>
 
@@ -38,7 +38,8 @@
                 <form method="POST" action="/admin/ticket/<%= ticket.token %>/void" class="void-form">
                     <button type="submit"
                         class="btn <%= ticket.status === 'active' ? 'btn-danger-outline' : 'btn-success' %> btn-full"
-                        onclick="return confirm('<%= ticket.status === 'active' ? 'Void this ticket?' : 'Reactivate this ticket?' %>')">
+                        data-confirm="<%= ticket.status === 'active' ? 'Void this ticket?' : 'Reactivate this ticket?' %>"
+                        onclick="return confirm(this.dataset.confirm)">
                         <%= ticket.status==='active' ? '🚫 Void Ticket' : '✅ Reactivate Ticket' %>
                     </button>
                 </form>
