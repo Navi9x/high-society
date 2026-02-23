@@ -45,4 +45,19 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_scans_scanned_at ON scans(scanned_at);
 `);
 
+// ─── Auto-seed admin on first run ────────────────────────────────────────────
+const adminCount = db.prepare('SELECT COUNT(*) AS n FROM admins').get().n;
+if (adminCount === 0) {
+  const user = process.env.ADMIN_USERNAME;
+  const pass = process.env.ADMIN_PASSWORD;
+  if (user && pass) {
+    const bcrypt = require('bcryptjs');
+    const hash = bcrypt.hashSync(pass, 12);
+    db.prepare('INSERT INTO admins (username, password_hash) VALUES (?, ?)').run(user, hash);
+    console.log(`✅  Auto-created admin: ${user}`);
+  } else {
+    console.warn('⚠️  No admins exist. Set ADMIN_USERNAME + ADMIN_PASSWORD env vars to auto-create one.');
+  }
+}
+
 module.exports = db;
