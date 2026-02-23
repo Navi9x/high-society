@@ -1,9 +1,14 @@
 'use strict';
 
+const fs = require('fs');
 const Database = require('better-sqlite3');
 const path = require('path');
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'tickets.db');
+
+// Ensure the directory exists (e.g. /data on Render's persistent disk)
+fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+
 const db = new Database(DB_PATH);
 
 // Enable WAL for better concurrent read performance
