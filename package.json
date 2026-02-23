@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node --watch server.js",
-    "seed": "node db/seed-admin.js"
+    "seed": "node db/seed-admin.js",
+    "tunnel": "lt --port 3000",
+    "event": "concurrently \"node server.js\" \"lt --port 3000 --print-requests\""
   },
   "engines": {
     "node": ">=18"
@@ -23,5 +25,9 @@
     "jsonwebtoken": "^9.0.2",
     "nanoid": "^3.3.7",
     "qrcode": "^1.5.3"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "localtunnel": "^2.0.2"
   }
 }
