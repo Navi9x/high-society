@@ -4,10 +4,15 @@ const fs = require('fs');
 const Database = require('better-sqlite3');
 const path = require('path');
 
-const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'tickets.db');
+let DB_PATH = process.env.DB_PATH || path.join(__dirname, 'tickets.db');
 
-// Ensure the directory exists — ignore errors (e.g. already exists or no permission)
-try { fs.mkdirSync(path.dirname(DB_PATH), { recursive: true }); } catch (_) { }
+// Ensure the DB directory exists — if not writable, fall back to local db/ folder
+try {
+  fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+} catch (err) {
+  console.warn(`⚠️  Cannot use DB_PATH "${DB_PATH}" (${err.message}). Falling back to local db folder.`);
+  DB_PATH = path.join(__dirname, 'tickets.db');
+}
 
 const db = new Database(DB_PATH);
 
