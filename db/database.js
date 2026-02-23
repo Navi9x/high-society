@@ -6,8 +6,8 @@ const path = require('path');
 
 const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'tickets.db');
 
-// Ensure the directory exists (e.g. /data on Render's persistent disk)
-fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
+// Ensure the directory exists — ignore errors (e.g. already exists or no permission)
+try { fs.mkdirSync(path.dirname(DB_PATH), { recursive: true }); } catch (_) { }
 
 const db = new Database(DB_PATH);
 
