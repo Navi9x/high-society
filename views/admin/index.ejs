@@ -8,9 +8,12 @@
                 <h2>Dashboard</h2>
                 <p class="subtitle">Manage your event tickets</p>
             </div>
-            <a href="/admin/scanner" class="btn btn-success">
-                <span>📷</span> Scanner
-            </a>
+            <div class="header-actions">
+                <% if ((stats.total || 0) > 0) { %>
+                <a href="/admin/download-qrs" class="btn btn-secondary" id="downloadAllBtn">⬇ Download All QRs</a>
+                <% } %>
+                <a href="/admin/scanner" class="btn btn-success"><span>📷</span> Scanner</a>
+            </div>
         </div>
 
         <!-- Alerts -->

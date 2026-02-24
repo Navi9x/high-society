@@ -2,6 +2,7 @@
 
 const express = require('express');
 const QRCode = require('qrcode');
+const archiver = require('archiver');
 const db = require('../db/database');
 const { requireAuth } = require('../middleware/requireAuth');
 const { generateToken } = require('../utils/token');
@@ -122,6 +123,38 @@ router.post('/ticket/:token/void', (req, res) => {
     db.prepare('UPDATE tickets SET status = ? WHERE token = ?').run(newStatus, ticket.token);
 
     res.redirect(`/admin/ticket/${ticket.token}`);
+});
+
+
+// ─── Download all QR codes as ZIP ────────────────────────────────────────────
+// GET /admin/download-qrs
+router.get('/download-qrs', async (req, res) => {
+    const tickets = db.prepare("SELECT * FROM tickets WHERE status = 'active' ORDER BY id ASC").all();
+
+    if (tickets.length === 0) {
+        return res.redirect('/admin?err=nothingtodownload');
+    }
+
+    const BASE_URL = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
+
+    res.setHeader('Content-Type', 'application/zip');
+    res.setHeader('Content-Disposition', 'attachment; filename="tickets-qr.zip"');
+
+    const archive = archiver('zip', { zlib: { level: 6 } });
+    archive.on('error', err => { console.error('Archive error:', err); res.end(); });
+    archive.pipe(res);
+
+    for (const ticket of tickets) {
+        const qrUrl = `${BASE_URL}/t/${ticket.token}`;
+        const buffer = await QRCode.toBuffer(qrUrl, {
+            errorCorrectionLevel: 'H',
+            width: 600,
+            margin: 2,
+        });
+        archive.append(buffer, { name: `${ticket.id}.png` });
+    }
+
+    await archive.finalize();
 });
 
 // ─── Scanner page ────────────────────────────────────────────────────────────

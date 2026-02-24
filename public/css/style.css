@@ -111,7 +111,8 @@ a:hover { text-decoration: underline; }
   text-decoration: none;
 }
 .back-link:hover { color: var(--text); text-decoration: none; }
-.header-badges { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
+.header-badges  { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; }
+.header-actions { display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; flex-wrap: wrap; }
 
 /* ─── Cards ──────────────────────────────────────────────────────────────────── */
 .card {

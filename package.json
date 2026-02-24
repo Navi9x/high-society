@@ -15,6 +15,7 @@
     "node": "20.x"
   },
   "dependencies": {
+    "archiver": "^7.0.1",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^9.4.3",
     "cookie-parser": "^1.4.6",
