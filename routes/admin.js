@@ -60,19 +60,12 @@ router.get('/', (req, res) => {
 // ─── Generate Tickets ────────────────────────────────────────────────────────
 // POST /admin/generate
 router.post('/generate', (req, res) => {
-    const existingCount = db.prepare('SELECT COUNT(*) AS n FROM tickets').get().n;
-    const maxTickets = 200;
-
     let vipCount = Math.max(0, parseInt(req.body.vipCount) || 0);
     let generalCount = Math.max(0, parseInt(req.body.generalCount) || 0);
     const total = vipCount + generalCount;
 
     if (total === 0) {
         return res.redirect('/admin?err=zero');
-    }
-    if (existingCount + total > maxTickets) {
-        const canCreate = maxTickets - existingCount;
-        return res.redirect(`/admin?err=limit&can=${canCreate}`);
     }
 
     const insert = db.prepare('INSERT INTO tickets (token, type) VALUES (?, ?)');
